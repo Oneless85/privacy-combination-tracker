@@ -94,7 +94,7 @@
     }
   </style>
   <script>
-    // Auto-suggest a language and offer a soft redirect after 2s (can be cancelled)
+    // Corrigido: removido o redirecionamento automático.
     document.addEventListener('DOMContentLoaded', () => {
       const map = {
         'pt': 'privacy_policy_pt.html',
@@ -109,17 +109,20 @@
         'de-de': 'privacy_policy_de.html'
       };
       const params = new URLSearchParams(location.search);
-      if (params.get('noredirect') === '1') return;
+      if (params.get('noredirect') === '1') return; // não mostra banner nem redireciona
+
       const nav = (navigator.language || 'en').toLowerCase();
-      let target = map[nav] || map[nav.split('-')[0]] || 'privacy_policy_en.html';
-      // Only show banner; do soft redirect after small delay
+      const target = map[nav] || map[nav.split('-')[0]] || 'privacy_policy_en.html';
+
+      // Mostrar banner com sugestão e link
       const banner = document.getElementById('redir');
       const link = document.getElementById('redir-link');
       link.href = target;
       banner.style.display = 'block';
-      const timer = setTimeout(()=> { window.location.href = target; }, 2000);
+
+      // Botão "Stay here" fecha o banner e marca noredirect=1
       document.getElementById('cancel').addEventListener('click', () => {
-        banner.style.display='none'; clearTimeout(timer);
+        banner.style.display='none';
         history.replaceState(null, '', location.pathname + '?noredirect=1');
       });
     });
@@ -138,7 +141,7 @@
     <div id="redir" class="panel" style="display:none">
       <div class="row">
         <span class="pill">We’ll open the best language for you…</span>
-        <a id="redir-link" class="cta" href="#">Open now</a>
+        <a id="redir-link" class="cta" href="#" rel="nofollow">Open now</a>
         <button id="cancel" class="cta" style="background:#26382d;color:#c9e9d9;box-shadow:none;">Stay here</button>
       </div>
       <div class="note" style="margin-top:8px">Tip: Append <code>?noredirect=1</code> to the URL to keep this index.</div>
